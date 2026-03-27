@@ -1,69 +1,93 @@
-# Django Documentation Generator
+# AI Doc Generator (General-Purpose)
 
-A Python tool to analyze Django project models and generate design documentation (ER diagrams, DFD, flowcharts) using AI.
+A package-first, AI-powered documentation generator for **any software project** (not only Django).
 
-## Features
+It works in four steps:
+1. Scan your file/folder structure.
+2. Extract lightweight source symbols (classes/functions from Python files).
+3. Analyze architecture hints by directory/file patterns.
+4. Generate selected design docs (DFD, sequence diagram, flowcharts, architecture docs, component design, deployment notes, and more).
 
-- **Automatic Model Discovery**: Finds all Django models in your project
-- **Relationship Analysis**: Maps ForeignKey, ManyToMany, and OneToOne relationships
-- **AI-Powered Documentation**: Uses Google Gemini API to generate:
-  - Entity-Relationship (ER) diagrams
-  - Data Flow Diagrams (DFD)
-  - Process Flowcharts
-  - System documentation
+## What changed from the old Django-specific version?
+
+- ✅ Repositioned as a **general doc generator** for any repository.
+- ✅ First-class **project structure discovery** (files + folders as the primary source).
+- ✅ Added **selectable system design output** with `--system-design-docs`.
+- ✅ Added **sequence diagram generation**.
+- ✅ Packaged with `pyproject.toml` and CLI script so it can be installed and used anywhere.
 
 ## Installation
 
-1. Copy the `django_doc_generator` folder to your Django project root
-2. Install dependencies:
-   ```bash
-   pipenv install google-generativeai
-   ```
+```bash
+pip install .
+```
 
-3. Set your API key:
-   ```bash
-   export GEMINI_API_KEY="your-api-key-here"
-   ```
+Optional provider extras:
+
+```bash
+pip install .[gemini]
+pip install .[openai]
+```
 
 ## Usage
 
+### Run directly as a module
+
 ```bash
-# From your Django project root
-pipenv run python -m django_doc_generator --settings myproject.settings
-
-# Or set environment variable
-export DJANGO_SETTINGS_MODULE=myproject.settings
-pipenv run python -m django_doc_generator
-
-# Generate specific outputs
-pipenv run python -m django_doc_generator --output-dir ./docs --format mermaid
-
-# Use AST mode (no Django initialization required)
-pipenv run python -m django_doc_generator --mode ast --project-dir .
+python -m doc_generator_ai --project-dir . --output-dir ./docs/generated
 ```
 
-## Output
+### Run via installed console command
 
-Generated documentation will be saved to the `./docs/generated/` directory:
-- `er_diagram.md` - Entity-Relationship diagram in Mermaid format
-- `dfd.md` - Data Flow Diagram
-- `flowcharts.md` - Process flowcharts
-- `models_analysis.json` - Raw model analysis data
+```bash
+doc-generator-ai --project-dir . --output-dir ./docs/generated
+```
 
-## Configuration
+### Select what to generate (new)
 
-You can customize behavior via command-line arguments or environment variables:
+```bash
+doc-generator-ai \
+  --project-dir . \
+  --system-design-docs overview,architecture,components,deployment,dfd,sequence,flowchart,requirements
+```
 
-| Argument | Env Variable | Description |
-|----------|--------------|-------------|
-| `--settings` | `DJANGO_SETTINGS_MODULE` | Django settings module path |
-| `--output-dir` | `DOC_OUTPUT_DIR` | Output directory (default: `./docs/generated`) |
-| `--format` | `DOC_FORMAT` | Output format: `mermaid`, `plantuml` |
-| `--mode` | `DOC_MODE` | Discovery mode: `django`, `ast` |
-| `--exclude` | - | Apps to exclude (comma-separated) |
+### Add user requirements to steer output
 
-## Requirements
+```bash
+doc-generator-ai \
+  --project-dir . \
+  --include-patterns "*.py,*.md,src/*" \
+  --requirements "Focus on auth flows, API boundaries, and async jobs."
+```
 
-- Python 3.9+
-- Django 3.2+ (for django mode)
-- google-generativeai
+### No-AI mode (template-based fallback)
+
+```bash
+doc-generator-ai --project-dir . --no-ai
+```
+
+## Output files
+
+In `--output-dir` you get:
+
+- `project_structure.json`
+- `system_analysis.json`
+- `overview.md` (if selected)
+- `architecture.md` (if selected)
+- `dfd.md` (if selected)
+- `sequence.md` (if selected)
+- `flowchart.md` (if selected)
+- `requirements.md` (if selected)
+- `components.md` (if selected)
+- `deployment.md` (if selected)
+- `index.md`
+
+## Environment variables
+
+- `GEMINI_API_KEY` (when using `--ai-provider gemini`)
+- `OPENAI_API_KEY` (when using `--ai-provider openai`)
+
+## Notes
+
+- The generator intentionally starts with repository structure to support mixed stacks and non-framework-specific projects.
+- You can refine outputs by adding detailed `--requirements` text and selecting only the needed doc types.

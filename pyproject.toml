@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "doc-generator-ai"
+version = "2.0.0"
+description = "General AI-powered documentation generator for software projects"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.optional-dependencies]
+gemini = ["google-generativeai>=0.8.0"]
+openai = ["openai>=1.40.0"]
+
+[project.scripts]
+doc-generator-ai = "doc_generator_ai.cli:main"
+
+[tool.setuptools]
+packages = ["doc_generator_ai", "doc_generator_ai.discovery", "doc_generator_ai.analyzers", "doc_generator_ai.generators", "doc_generator_ai.outputs"]
