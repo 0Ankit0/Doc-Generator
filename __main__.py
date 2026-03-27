@@ -1,6 +1,6 @@
-"""Allow running the package with python -m django_doc_generator"""
+"""Backward-compatible module runner."""
 
-from .main import main
+from doc_generator_ai.cli import main
 
 if __name__ == "__main__":
     main()

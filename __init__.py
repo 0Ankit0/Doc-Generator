@@ -1,9 +1,6 @@
-"""
-Django Documentation Generator
+"""Legacy package namespace kept for compatibility.
 
-A tool to analyze Django project models and generate design documentation
-using AI (ER diagrams, DFD, flowcharts).
+Use `doc_generator_ai` for the generalized package.
 """
 
-__version__ = "1.0.0"
-__author__ = "Django Doc Generator"
+__version__ = "2.0.0"
